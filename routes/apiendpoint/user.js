@@ -71,6 +71,7 @@ router.post("/register", (req, res) => {
 });
 router.post("/timesheet", (req, res) => {
   console.log("here it is", req.body);
+  const name = req.body.name;
   const newUser = new TimeSheets({
     name: req.body.name,
     month: req.body.month,
@@ -84,6 +85,20 @@ router.post("/timesheet", (req, res) => {
       .save()
       .then((user) => res.json(user))
       .catch((err) => console.log(err));
+  });
+});
+router.post("/updateClockout", (req, res) => {
+  const name = req.body.name;
+  User.findOne({ name }).then((user) => {
+    if (!user) {
+      return res.json({ name: "name not found", otp: "" });
+    } else {
+      user.clockout = req.body.clockout;
+      bcrypt.genSalt(10, (err, salt) => {
+        user.save().catch((err) => console.log(err));
+      });
+      return res.json({ email: "user Exists", user: user });
+    }
   });
 });
 module.exports = router;
