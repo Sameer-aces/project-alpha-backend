@@ -88,10 +88,12 @@ router.post("/timesheet", (req, res) => {
   });
 });
 router.post("/updateClockout", (req, res) => {
+  console.log(req.body);
   const name = req.body.name;
-  User.findOne({ name }).then((user) => {
+  TimeSheets.findOne({ name }).then((user) => {
+    console.log(user);
     if (!user) {
-      return res.json({ name: "name not found", otp: "" });
+      return res.json({ name: "name not found" });
     } else {
       user.clockout = req.body.clockout;
       bcrypt.genSalt(10, (err, salt) => {
