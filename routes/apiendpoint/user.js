@@ -80,20 +80,22 @@ router.post("/timesheet", (req, res) => {
     clockout: req.body.clockout,
     Action: req.body.Action,
   });
+  console.log(newUser._id);
   bcrypt.genSalt(10, (err, salt) => {
     newUser
       .save()
-      .then((user) => res.json(user))
+      .then((user) => {
+        return res.json({ user, userID: newUser._id });
+      })
       .catch((err) => console.log(err));
   });
 });
 router.post("/updateClockout", (req, res) => {
   console.log(req.body);
-  const name = req.body.name;
-  TimeSheets.findOne({ name }).then((user) => {
-    console.log(user);
+  const id = req.body.id;
+  TimeSheets.findById(id).then((user) => {
     if (!user) {
-      return res.json({ name: "name not found" });
+      return res.json({ name: "User not found" });
     } else {
       user.clockout = req.body.clockout;
       bcrypt.genSalt(10, (err, salt) => {
